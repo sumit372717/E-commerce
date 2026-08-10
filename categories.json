@@ -1,0 +1,132 @@
+[
+  {
+    "slug": "desktop",
+    "label": "Desktop",
+    "subcategories": [
+      "Prebuilt PCs",
+      "Mini PCs",
+      "Workstations"
+    ]
+  },
+  {
+    "slug": "laptop",
+    "label": "Laptop",
+    "subcategories": [
+      "Gaming Laptops",
+      "Ultrabooks",
+      "Business Laptops"
+    ]
+  },
+  {
+    "slug": "component",
+    "label": "Component",
+    "subcategories": [
+      "CPU",
+      "GPU",
+      "Motherboard",
+      "RAM",
+      "Storage",
+      "PSU",
+      "Case",
+      "Cooling"
+    ]
+  },
+  {
+    "slug": "monitor",
+    "label": "Monitor",
+    "subcategories": [
+      "Gaming Monitors",
+      "4K Monitors",
+      "Ultrawide"
+    ]
+  },
+  {
+    "slug": "power",
+    "label": "Power",
+    "subcategories": [
+      "Power Supplies",
+      "UPS",
+      "Surge Protection"
+    ]
+  },
+  {
+    "slug": "phone",
+    "label": "Phone",
+    "subcategories": [
+      "Smartphones",
+      "Accessories"
+    ]
+  },
+  {
+    "slug": "tablet",
+    "label": "Tablet",
+    "subcategories": [
+      "Tablets",
+      "Styluses",
+      "Keyboards"
+    ]
+  },
+  {
+    "slug": "office-equipment",
+    "label": "Office Equipment",
+    "subcategories": [
+      "Printers",
+      "Scanners",
+      "Shredders"
+    ]
+  },
+  {
+    "slug": "camera",
+    "label": "Camera",
+    "subcategories": [
+      "Webcams",
+      "Security Cameras",
+      "Action Cameras"
+    ]
+  },
+  {
+    "slug": "security",
+    "label": "Security",
+    "subcategories": [
+      "Antivirus",
+      "NVR/DVR",
+      "Access Control"
+    ]
+  },
+  {
+    "slug": "networking",
+    "label": "Networking",
+    "subcategories": [
+      "Routers",
+      "Switches",
+      "Wi-Fi Systems"
+    ]
+  },
+  {
+    "slug": "software",
+    "label": "Software",
+    "subcategories": [
+      "Operating Systems",
+      "Productivity",
+      "Security"
+    ]
+  },
+  {
+    "slug": "server",
+    "label": "Server",
+    "subcategories": [
+      "Rack Servers",
+      "Tower Servers",
+      "Storage Servers"
+    ]
+  },
+  {
+    "slug": "accessories",
+    "label": "Accessories",
+    "subcategories": [
+      "Cables",
+      "Mounts",
+      "Peripherals"
+    ]
+  }
+]

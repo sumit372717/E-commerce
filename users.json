@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "email": "admin@circuitforge.com",
+    "password": "$2b$10$kxA/VSadAdV/4AfYLSd2xu0q5/YzLsNxt0F7TmLlkyXH8l/YkcaHO",
+    "name": "Admin",
+    "role": "admin",
+    "createdAt": "2026-08-02T20:08:52.186Z"
+  },
+  {
+    "id": "2",
+    "email": "customer@circuitforge.com",
+    "password": "$2b$10$CFicNXeBBQEJZsto/lM8/.Z0MOt16VLgvRXy4oOVSqHoqjUkjY9zy",
+    "name": "Customer",
+    "role": "customer",
+    "createdAt": "2026-08-02T20:08:52.188Z"
+  },
+  {
+    "id": "3",
+    "email": "test@test.com",
+    "password": "$2b$10$DyZaAVBrSyTyf1dDwZwHLOoYsSIkD4bf2t9jPV5myVOMaLq8tSmay",
+    "name": "Test User",
+    "role": "customer",
+    "createdAt": "2026-08-02T20:08:52.303Z"
+  }
+]

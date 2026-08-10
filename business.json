@@ -1,0 +1,17 @@
+[
+  {
+    "id": "1785708389873",
+    "userId": "3",
+    "companyName": "ToTO Company",
+    "taxId": "123456",
+    "vatNumber": "123456",
+    "address": "Block B, Bashundhara R/A. Dhaka‐1229.",
+    "phone": "01794068771",
+    "website": "https://abctech.com",
+    "businessType": "retail",
+    "estimatedMonthlyOrder": "1000-5000",
+    "status": "active",
+    "createdAt": "2026-08-02T22:06:29.879Z",
+    "updatedAt": "2026-08-02T22:06:29.888Z"
+  }
+]
