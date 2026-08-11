@@ -49,4 +49,4 @@ export function clearStoredUser() {
   if (typeof window !== 'undefined') {
     localStorage.removeItem('auth_user')
   }
-}
+} 
