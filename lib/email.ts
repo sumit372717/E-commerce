@@ -1,5 +1,4 @@
-export async function sendEmail(data: any) {
-  // Placeholder for your email logic (e.g. Resend, Nodemailer, Postmark)
-  console.log("Sending email...", data);
+export async function sendOrderConfirmation(orderData: any) {
+  console.log("Sending order confirmation email:", orderData);
   return { success: true };
 }
