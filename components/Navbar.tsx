@@ -1,12 +1,35 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { categories } from "@/lib/data";
 import CategoryMegaMenu from "./CategoryMegaMenu";
+import { getStoredUser, clearStoredUser } from "@/lib/auth";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const storedUser = getStoredUser();
+    if (storedUser) {
+      setUser(storedUser);
+    }
+
+    const handleStorageChange = () => {
+      const updatedUser = getStoredUser();
+      setUser(updatedUser);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const handleLogout = () => {
+    clearStoredUser();
+    setUser(null);
+    window.location.href = "/";
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-base">
@@ -60,10 +83,28 @@ export default function Navbar() {
         </form>
 
         <div className="ml-auto flex items-center gap-5 text-ink">
-          <Link href="/account" className="hidden text-sm sm:flex sm:flex-col sm:leading-tight">
-            <span className="text-muted text-xs">Account</span>
-            <span className="font-medium">Sign in</span>
-          </Link>
+          {user ? (
+            <div className="flex items-center gap-3 text-sm">
+              <span className="text-muted">Welcome,</span>
+              <span className="font-medium">{user.name}</span>
+              {user.role === "admin" && (
+                <Link href="/admin" className="text-xs text-trace hover:underline">
+                  Admin
+                </Link>
+              )}
+              <button
+                onClick={handleLogout}
+                className="text-xs text-muted hover:text-red-500"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Link href="/login" className="hidden text-sm sm:flex sm:flex-col sm:leading-tight">
+              <span className="text-muted text-xs">Account</span>
+              <span className="font-medium">Sign in</span>
+            </Link>
+          )}
           <Link href="/cart" className="relative flex items-center gap-2">
             <span aria-hidden>🛒</span>
             <span className="hidden text-sm font-mono sm:inline">৳0</span>
