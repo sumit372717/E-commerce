@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { setToken, setStoredUser } from "@/lib/auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -56,6 +57,19 @@ export default function LoginPage() {
           console.log('🟢 Sync result:', result);
         } catch (syncError) {
           console.error('🔴 Sync error:', syncError);
+        }
+
+        // Save token and user to localStorage
+        const token = data.session?.access_token;
+        if (token) {
+          setToken(token);
+          setStoredUser({
+            id: data.user.id,
+            email: data.user.email || '',
+            name: data.user.user_metadata?.name || data.user.email || '',
+            role: 'customer',
+            createdAt: data.user.created_at || new Date().toISOString()
+          });
         }
         
         router.push("/");
