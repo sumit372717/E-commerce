@@ -74,7 +74,9 @@ export default function LoginPage() {
         }
         
         router.push("/");
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 200);
       }
     } catch (err: any) {
       setError(err.message);
