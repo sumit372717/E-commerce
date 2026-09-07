@@ -38,8 +38,22 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        console.log('🟡 Syncing user:', data.user.id);
+        console.log('🟡 User logged in:', data.user.id);
         
+        // Save token and user to localStorage
+        const token = data.session?.access_token;
+        if (token) {
+          setToken(token);
+          setStoredUser({
+            id: data.user.id,
+            email: data.user.email || '',
+            name: data.user.user_metadata?.name || data.user.email || '',
+            role: data.user.user_metadata?.role || 'customer',
+            createdAt: data.user.created_at || new Date().toISOString()
+          });
+        }
+        
+        // Sync user with database
         try {
           const response = await fetch('/api/users/sync', {
             method: 'POST',
@@ -57,19 +71,6 @@ export default function LoginPage() {
           console.log('🟢 Sync result:', result);
         } catch (syncError) {
           console.error('🔴 Sync error:', syncError);
-        }
-
-        // Save token and user to localStorage
-        const token = data.session?.access_token;
-        if (token) {
-          setToken(token);
-          setStoredUser({
-            id: data.user.id,
-            email: data.user.email || '',
-            name: data.user.user_metadata?.name || data.user.email || '',
-            role: 'customer',
-            createdAt: data.user.created_at || new Date().toISOString()
-          });
         }
         
         router.push("/");
