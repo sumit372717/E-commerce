@@ -31,7 +31,7 @@ export default function ProductCard({ product }: { product: Product }) {
             {product.badge}
           </span>
         )}
-        {!product.inStock && (
+        {!product.in_stock && (
           <span className="absolute right-2 top-2 border border-line bg-surface px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-muted">
             Out of stock
           </span>
@@ -45,7 +45,7 @@ export default function ProductCard({ product }: { product: Product }) {
       {product.rating && (
         <div className="mt-1.5 flex items-center gap-1.5 text-xs text-muted">
           <span className="text-trace">★ {product.rating.toFixed(1)}</span>
-          <span>({product.reviewCount})</span>
+          <span>({product.review_count})</span>
         </div>
       )}
 
@@ -53,9 +53,9 @@ export default function ProductCard({ product }: { product: Product }) {
         <span className="text-lg font-semibold text-ink">
           {formatPrice(product.price)}
         </span>
-        {product.compareAtPrice && (
+        {product.compare_at_price && (
           <span className="text-xs text-muted line-through">
-            {formatPrice(product.compareAtPrice)}
+            {formatPrice(product.compare_at_price)}
           </span>
         )}
       </div>

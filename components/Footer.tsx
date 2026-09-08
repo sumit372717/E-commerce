@@ -8,7 +8,7 @@ const footerColumns = [
       { label: "Desktops", href: "/category/desktop" },
       { label: "Laptops", href: "/category/laptop" },
       { label: "Monitors", href: "/category/monitor" },
-      { label: "Custom Builds", href: "/build" },
+      { label: "Custom Builds", href: "/custom-builds" },
     ],
   },
   {
@@ -16,19 +16,12 @@ const footerColumns = [
     links: [
       { label: "Help Centre", href: "/help" },
       { label: "Track Order", href: "/track-order" },
-      { label: "Returns", href: "/returns" },
-      { label: "Warranty", href: "/warranty" },
-      { label: "Contact Us", href: "/contact" },
     ],
   },
   {
     heading: "Company",
     links: [
-      { label: "About Us", href: "/about-us" },
-      { label: "Careers", href: "/careers" },
       { label: "Business Accounts", href: "/business" },
-      { label: "Affiliate Program", href: "/affiliates" },
-      { label: "Reviews", href: "/reviews" },
     ],
   },
   {

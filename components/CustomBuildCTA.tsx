@@ -15,7 +15,7 @@ export default function CustomBuildCTA() {
         eyebrow="Configure to order"
         title="Custom Built PCs"
         description="Pick every part, or hand us a budget and a use case — either way, it's built on our bench and stress-tested before it ships."
-        href="/build"
+        href="/custom-builds"
         linkLabel="Start a build"
       />
 
@@ -39,7 +39,7 @@ export default function CustomBuildCTA() {
           </p>
         </div>
         <Link
-          href="/build/guided"
+          href="/custom-builds"
           className="whitespace-nowrap border border-trace bg-trace px-5 py-2.5 text-sm font-semibold text-base hover:opacity-90"
         >
           Guided Build →
