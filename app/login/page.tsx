@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { setToken, setStoredUser } from "@/lib/auth";
+import { setToken, setStoredUser } from "@/lib/auth"; // ← ADD THIS
 
 export default function LoginPage() {
   const router = useRouter();
@@ -39,7 +39,7 @@ export default function LoginPage() {
       if (data.user) {
         console.log('🟡 User logged in:', data.user.id);
         
-        // ✅ Save user to localStorage
+        // ✅ SAVE USER TO LOCALSTORAGE
         const token = data.session?.access_token;
         if (token) {
           setToken(token);
