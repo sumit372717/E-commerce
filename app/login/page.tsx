@@ -1,92 +1,82 @@
-```tsx
 "use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
-import { setToken, setStoredUser } from "@/lib/auth";
+import { setToken, setStoredUser } from "@/lib/auth"; // ← ADD THIS
 
 export default function LoginPage() {
   const router = useRouter();
-  const { user, login, refreshUser } = useAuth();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Check if user is already logged in
-    const checkUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (user) {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
         router.push("/");
       }
-    };
-
-    checkUser();
+    });
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    console.log("🔵 Form submitted!");
-
     setError("");
     setLoading(true);
 
     try {
-      // Use AuthContext login instead of directly logging in here
-      await login(email, password);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-      console.log("🟢 Login successful");
+      if (error) {
+        throw new Error(error.message);
+      }
 
-      // Get the newly authenticated user and update AuthContext
-      await refreshUser();
-
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (user) {
-        console.log("🟡 User logged in:", user.id);
-
-        // SAVE TO LOCALSTORAGE
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-
-        const token = session?.access_token;
-
+      if (data.user) {
+        console.log('🟡 User logged in:', data.user.id);
+        
+        // ✅ SAVE USER TO LOCALSTORAGE
+        const token = data.session?.access_token;
         if (token) {
           setToken(token);
-
           setStoredUser({
-            id: user.id,
-            email: user.email || "",
-            name:
-              user.user_metadata?.name ||
-              user.email ||
-              "",
-            role:
-              user.user_metadata?.role ||
-              "customer",
-            createdAt:
-              user.created_at ||
-              new Date().toISOString(),
+            id: data.user.id,
+            email: data.user.email || '',
+            name: data.user.user_metadata?.name || data.user.email || '',
+            role: data.user.user_metadata?.role || 'customer',
+            createdAt: data.user.created_at || new Date().toISOString()
           });
         }
-
+        
+        // Sync with database
+        try {
+          const response = await fetch('/api/users/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: data.user.id,
+              email: data.user.email,
+              name: data.user.user_metadata?.name || data.user.email,
+              role: data.user.user_metadata?.role || 'customer'
+            }),
+          });
+          
+          console.log('🟢 Sync response status:', response.status);
+          const result = await response.json();
+          console.log('🟢 Sync result:', result);
+        } catch (syncError) {
+          console.error('🔴 Sync error:', syncError);
+        }
+        
         router.push("/");
+        // Remove window.location.reload()
       }
     } catch (err: any) {
-      console.error("🔴 Login error:", err);
-      setError(err.message || "Failed to sign in");
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -94,16 +84,10 @@ export default function LoginPage() {
 
   return (
     <div className="mx-auto max-w-md px-6 py-16">
-      <h1 className="font-display text-3xl font-bold text-ink text-center">
-        Sign In
-      </h1>
-
+      <h1 className="font-display text-3xl font-bold text-ink text-center">Sign In</h1>
       <p className="mt-2 text-center text-muted">
         Or{" "}
-        <Link
-          href="/register"
-          className="text-trace hover:underline"
-        >
+        <Link href="/register" className="text-trace hover:underline">
           create an account
         </Link>
       </p>
@@ -114,18 +98,11 @@ export default function LoginPage() {
         </div>
       )}
 
-      <form
-        onSubmit={handleSubmit}
-        className="mt-8 space-y-4"
-      >
+      <form onSubmit={handleSubmit} className="mt-8 space-y-4">
         <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-ink"
-          >
+          <label htmlFor="email" className="block text-sm font-medium text-ink">
             Email
           </label>
-
           <input
             id="email"
             type="email"
@@ -137,13 +114,9 @@ export default function LoginPage() {
         </div>
 
         <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-ink"
-          >
+          <label htmlFor="password" className="block text-sm font-medium text-ink">
             Password
           </label>
-
           <input
             id="password"
             type="password"
@@ -174,4 +147,3 @@ export default function LoginPage() {
     </div>
   );
 }
-```
