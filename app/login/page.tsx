@@ -73,6 +73,7 @@ export default function LoginPage() {
         }
         
         router.push("/");
+        // Remove window.location.reload()
       }
     } catch (err: any) {
       setError(err.message);
