@@ -1,18 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CategoryMegaMenu from "./CategoryMegaMenu";
-import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
+import { getStoredUser, clearStoredUser } from "@/lib/auth";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const [user, setUser] = useState<any>(null);
   const { totalItems, totalPrice } = useCart();
 
-  const handleLogout = async () => {
-    await logout();
+  // Check for user on load and when storage changes
+  useEffect(() => {
+    const storedUser = getStoredUser();
+    setUser(storedUser);
+
+    const handleStorageChange = () => {
+      setUser(getStoredUser());
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const handleLogout = () => {
+    clearStoredUser();
+    setUser(null);
     window.location.href = "/";
   };
 
@@ -82,11 +95,9 @@ export default function Navbar() {
         <div className="ml-auto flex items-center gap-5 text-ink">
           {user ? (
             <div className="flex items-center gap-3 text-sm">
-              <Link href="/account" className="text-muted hover:text-trace">Welcome,</Link>
-              <Link href="/account" className="font-medium hover:text-trace">
-                {user.user_metadata?.name || user.email || 'User'}
-              </Link>
-              {user.user_metadata?.role === "admin" && (
+              <span className="text-muted">Welcome,</span>
+              <span className="font-medium">{user.name || user.email}</span>
+              {user.role === "admin" && (
                 <Link href="/admin" className="text-xs text-trace hover:underline">
                   Admin
                 </Link>
