@@ -10,19 +10,15 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
 
-  useEffect(() => {
+  const checkUser = () => {
     const storedUser = getStoredUser();
-    if (storedUser) {
-      setUser(storedUser);
-    }
+    setUser(storedUser);
+  };
 
-    const handleStorageChange = () => {
-      const updatedUser = getStoredUser();
-      setUser(updatedUser);
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+  useEffect(() => {
+    checkUser();
+    window.addEventListener('storage', checkUser);
+    return () => window.removeEventListener('storage', checkUser);
   }, []);
 
   const handleLogout = () => {
