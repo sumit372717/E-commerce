@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { setToken, setStoredUser } from "@/lib/auth"; // ← ADD THIS
+import { setToken, setStoredUser } from "@/lib/auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,15 +14,19 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) {
+    // Check if user is already logged in
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
         router.push("/");
       }
-    });
+    };
+    checkUser();
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("🔵 Form submitted!"); // ← ADD THIS TO CONFIRM
     setError("");
     setLoading(true);
 
@@ -39,7 +43,7 @@ export default function LoginPage() {
       if (data.user) {
         console.log('🟡 User logged in:', data.user.id);
         
-        // ✅ SAVE USER TO LOCALSTORAGE
+        // SAVE TO LOCALSTORAGE
         const token = data.session?.access_token;
         if (token) {
           setToken(token);
@@ -52,28 +56,7 @@ export default function LoginPage() {
           });
         }
         
-        // Sync with database
-        try {
-          const response = await fetch('/api/users/sync', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              id: data.user.id,
-              email: data.user.email,
-              name: data.user.user_metadata?.name || data.user.email,
-              role: data.user.user_metadata?.role || 'customer'
-            }),
-          });
-          
-          console.log('🟢 Sync response status:', response.status);
-          const result = await response.json();
-          console.log('🟢 Sync result:', result);
-        } catch (syncError) {
-          console.error('🔴 Sync error:', syncError);
-        }
-        
         router.push("/");
-        // Remove window.location.reload()
       }
     } catch (err: any) {
       setError(err.message);
