@@ -1,75 +1,55 @@
 import Link from "next/link";
 
-const siteMapSections = [
-  {
-    category: "Shop Categories",
-    links: [
-      { label: "Components & Hardware", href: "/category/component" },
-      { label: "Pre-Built Desktops", href: "/category/desktop" },
-      { label: "Gaming Laptops", href: "/category/laptop" },
-      { label: "High-Refresh Monitors", href: "/category/monitor" },
-      { label: "Custom PC Builder", href: "/build" },
-    ],
-  },
-  {
-    category: "Customer Support",
-    links: [
-      { label: "Help Centre & FAQ", href: "/help" },
-      { label: "Track Your Shipment", href: "/track-order" },
-      { label: "Returns & RMA Request", href: "/returns" },
-      { label: "Warranty & Service Policy", href: "/warranty" },
-      { label: "Contact Technical Support", href: "/contact" },
-    ],
-  },
-  {
-    category: "Company & Corporate",
-    links: [
-      { label: "About CircuitForge", href: "/about-us" },
-      { label: "Careers & Engineering Jobs", href: "/careers" },
-      { label: "Business & Enterprise Accounts", href: "/business" },
-      { label: "Affiliate Partner Program", href: "/affiliates" },
-      { label: "Verified Reviews", href: "/reviews" },
-    ],
-  },
-  {
-    category: "Legal & Policies",
-    links: [
-      { label: "Privacy & Cookies", href: "/privacy" },
-      { label: "Terms & Conditions", href: "/terms" },
-      { label: "HTML Sitemap Index", href: "/sitemap" },
-    ],
-  },
-];
-
 export default function SitemapPage() {
   return (
-    <main className="mx-auto max-w-5xl px-6 py-16 text-ink">
-      <div className="border-b border-line pb-8">
-        <h1 className="font-display text-3xl font-bold">Site Directory</h1>
-        <p className="mt-2 text-sm text-muted">Complete index of pages across the CircuitForge platform.</p>
+    <div className="mx-auto max-w-4xl px-6 py-12">
+      <h1 className="font-display text-3xl font-bold text-ink">Sitemap</h1>
+      
+      <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
+        <div>
+          <h2 className="font-display text-xl font-bold text-ink">Pages</h2>
+          <ul className="mt-4 space-y-2">
+            <li><Link href="/" className="text-trace hover:underline">Home</Link></li>
+            <li><Link href="/cart" className="text-trace hover:underline">Cart</Link></li>
+            <li><Link href="/checkout" className="text-trace hover:underline">Checkout</Link></li>
+            <li><Link href="/login" className="text-trace hover:underline">Login</Link></li>
+            <li><Link href="/register" className="text-trace hover:underline">Register</Link></li>
+            <li><Link href="/track-order" className="text-trace hover:underline">Track Order</Link></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h2 className="font-display text-xl font-bold text-ink">Categories</h2>
+          <ul className="mt-4 space-y-2">
+            <li><Link href="/category/desktop" className="text-trace hover:underline">Desktop</Link></li>
+            <li><Link href="/category/laptop" className="text-trace hover:underline">Laptop</Link></li>
+            <li><Link href="/category/component" className="text-trace hover:underline">Component</Link></li>
+            <li><Link href="/category/monitor" className="text-trace hover:underline">Monitor</Link></li>
+            <li><Link href="/category/networking" className="text-trace hover:underline">Networking</Link></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h2 className="font-display text-xl font-bold text-ink">AI Tools</h2>
+          <ul className="mt-4 space-y-2">
+            <li><Link href="/ai/bottleneck-analyzer" className="text-trace hover:underline">Bottleneck Analyzer</Link></li>
+            <li><Link href="/ai/compatibility-checker" className="text-trace hover:underline">Compatibility Checker</Link></li>
+            <li><Link href="/ai/upgrade-planner" className="text-trace hover:underline">Upgrade Planner</Link></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h2 className="font-display text-xl font-bold text-ink">Legal</h2>
+          <ul className="mt-4 space-y-2">
+            <li><Link href="/privacy" className="text-trace hover:underline">Privacy & Cookies</Link></li>
+            <li><Link href="/terms" className="text-trace hover:underline">Terms & Conditions</Link></li>
+          </ul>
+        </div>
       </div>
-
-      <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-        {siteMapSections.map((sec) => (
-          <div key={sec.category} className="rounded-xl border border-line bg-surface p-6">
-            <h2 className="font-mono text-xs uppercase tracking-wider text-trace font-bold mb-4">
-              {sec.category}
-            </h2>
-            <ul className="space-y-3">
-              {sec.links.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted transition-colors hover:text-ink hover:underline"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </main>
+      
+      <Link href="/" className="mt-8 inline-block bg-trace px-6 py-3 text-base font-semibold hover:opacity-80">
+        ← Back to Home
+      </Link>
+    </div>
   );
 }
