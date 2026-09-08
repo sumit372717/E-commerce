@@ -1,17 +1,13 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
 import Stripe from 'stripe'
 
-export const dynamic = 'force-dynamic'
-
-const stripe = new Stripe(process.env.STRIPESECRETKEY!, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-07-29.dahlia',
 })
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
   try {
-    const { searchParams } = new URL(request.url)
-    const sessionId = searchParams.get('session_id')
+    const { sessionId } = await request.json()
 
     if (!sessionId) {
       return NextResponse.json(
@@ -20,52 +16,18 @@ export async function GET(request: Request) {
       )
     }
 
+    // Retrieve the session from Stripe
     const session = await stripe.checkout.sessions.retrieve(sessionId)
-    
-    console.log('🔍 Session data:', JSON.stringify(session, null, 2))
 
-    if (session.payment_status !== 'paid') {
-      return NextResponse.json(
-        { error: 'Payment not completed' },
-        { status: 400 }
-      )
-    }
-
-    const shippingAddress = session.metadata?.shippingAddress
-      ? JSON.parse(session.metadata.shippingAddress)
-      : {}
-
-    const newOrder = {
-      id: `ORD-${Date.now()}`,
-      user_id: session.client_reference_id || 'guest',
-      items: session.metadata?.items ? JSON.parse(session.metadata.items) : [],
-      total: session.amount_total ? session.amount_total / 100 : 0,
-      shipping_address: shippingAddress,
-      payment_method: 'stripe',
-      payment_intent: session.payment_intent,
-      status: 'processing',
-      created_at: new Date().toISOString(),
-    }
-
-    const { data, error } = await supabase
-      .from('orders')
-      .insert(newOrder)
-      .select()
-      .single()
-
-    if (error) {
-      console.error('Supabase error:', error)
-      return NextResponse.json(
-        { error: 'Failed to create order' },
-        { status: 500 }
-      )
-    }
-
-    return NextResponse.json({ orderId: data.id })
+    return NextResponse.json({
+      status: session.payment_status,
+      customer: session.customer_details,
+      amount_total: session.amount_total,
+    })
   } catch (error: any) {
-    console.error('Verify error:', error)
+    console.error('Stripe verify error:', error)
     return NextResponse.json(
-      { error: error.message || 'Failed to verify payment' },
+      { error: error.message || 'Verification failed' },
       { status: 500 }
     )
   }
