@@ -14,10 +14,11 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Check if already logged in
+    // Check session but don't redirect
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
-        router.push("/");
+        // User is logged in, but we show the login page anyway
+        // The navbar will handle showing the user
       }
     });
   }, [router]);
