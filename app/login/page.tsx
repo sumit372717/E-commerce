@@ -14,11 +14,9 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Check session but don't redirect
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
-        // User is logged in, but we show the login page anyway
-        // The navbar will handle showing the user
+        router.push("/");
       }
     });
   }, [router]);
@@ -41,7 +39,7 @@ export default function LoginPage() {
       if (data.user) {
         console.log('🟡 User logged in:', data.user.id);
         
-        // Save token and user to localStorage
+        // ✅ Save user to localStorage
         const token = data.session?.access_token;
         if (token) {
           setToken(token);
@@ -54,7 +52,7 @@ export default function LoginPage() {
           });
         }
         
-        // Sync user with database
+        // Sync with database
         try {
           const response = await fetch('/api/users/sync', {
             method: 'POST',
@@ -63,7 +61,7 @@ export default function LoginPage() {
               id: data.user.id,
               email: data.user.email,
               name: data.user.user_metadata?.name || data.user.email,
-              role: 'customer'
+              role: data.user.user_metadata?.role || 'customer'
             }),
           });
           
@@ -75,9 +73,6 @@ export default function LoginPage() {
         }
         
         router.push("/");
-        setTimeout(() => {
-          window.location.reload();
-        }, 200);
       }
     } catch (err: any) {
       setError(err.message);
