@@ -46,6 +46,7 @@ export async function createUser(email: string, password: string, name: string):
 
   const hashedPassword = await bcrypt.hash(password, 10)
 
+  // Get the count of users for ID generation
   const { count, error: countError } = await supabase
     .from('users')
     .select('*', { count: 'exact', head: true })
