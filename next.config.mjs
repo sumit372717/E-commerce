@@ -1,13 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  optimizeFonts: false,
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "via.placeholder.com", // update if needed
+        hostname: "placehold.co",
       },
     ],
+    unoptimized: true,
   },
 };
 
