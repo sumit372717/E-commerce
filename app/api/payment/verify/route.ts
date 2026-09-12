@@ -1,15 +1,16 @@
 import { NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
+import { sendOrderConfirmation } from '@/lib/email'
 import Stripe from 'stripe'
 
 export const dynamic = 'force-dynamic'
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2026-07-29.dahlia',
+})
+
 export async function GET(request: Request) {
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: '2026-07-29.dahlia',
-    })
-
     const { searchParams } = new URL(request.url)
     const sessionId = searchParams.get('session_id')
 
@@ -21,8 +22,6 @@ export async function GET(request: Request) {
     }
 
     const session = await stripe.checkout.sessions.retrieve(sessionId)
-
-    console.log('🔍 Session data:', JSON.stringify(session, null, 2))
 
     if (session.payment_status !== 'paid') {
       return NextResponse.json(
@@ -56,9 +55,18 @@ export async function GET(request: Request) {
     if (error) {
       console.error('Supabase error:', error)
       return NextResponse.json(
-        { error: 'Failed to create order' },
+        { error: 'Failed to create order', details: error.message, code: error.code, hint: error.hint },
         { status: 500 }
       )
+    }
+
+    try {
+      if (session.customer_email) {
+        await sendOrderConfirmation(data, session.customer_email)
+        console.log('Confirmation email sent to:', session.customer_email)
+      }
+    } catch (emailError) {
+      console.error('Failed to send confirmation email:', emailError)
     }
 
     return NextResponse.json({ orderId: data.id })
