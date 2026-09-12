@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function TrackOrderPage() {
+function TrackOrderContent() {
+  const searchParams = useSearchParams();
   const [orderId, setOrderId] = useState("");
   const [email, setEmail] = useState("");
   const [order, setOrder] = useState<any>(null);
@@ -11,15 +13,14 @@ export default function TrackOrderPage() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const doSearch = async (id: string, mail: string) => {
     setError("");
     setOrder(null);
     setLoading(true);
     setSearched(true);
 
     try {
-      const res = await fetch(`/api/track-order?id=${orderId}&email=${encodeURIComponent(email)}`);
+      const res = await fetch(`/api/track-order?id=${encodeURIComponent(id)}&email=${encodeURIComponent(mail)}`);
       const data = await res.json();
 
       if (!res.ok) {
@@ -32,6 +33,22 @@ export default function TrackOrderPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    const urlId = searchParams.get("id");
+    const urlEmail = searchParams.get("email");
+
+    if (urlId && urlEmail) {
+      setOrderId(urlId);
+      setEmail(urlEmail);
+      doSearch(urlId, urlEmail);
+    }
+  }, [searchParams]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await doSearch(orderId, email);
   };
 
   const getStatusColor = (status: string) => {
@@ -73,7 +90,7 @@ export default function TrackOrderPage() {
             type="text"
             value={orderId}
             onChange={(e) => setOrderId(e.target.value)}
-            placeholder="e.g., 1, 2, 3..."
+            placeholder="e.g., ORD-1789169943582"
             className="mt-1 w-full border border-line bg-surface px-4 py-2 text-ink focus:border-trace"
             required
           />
@@ -122,7 +139,7 @@ export default function TrackOrderPage() {
                 Order #{order.id}
               </h2>
               <p className="text-sm text-muted">
-                {new Date(order.createdAt).toLocaleDateString()} at {new Date(order.createdAt).toLocaleTimeString()}
+                {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : '—'} at {order.createdAt ? new Date(order.createdAt).toLocaleTimeString() : ''}
               </p>
             </div>
             <div className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
@@ -152,15 +169,17 @@ export default function TrackOrderPage() {
           <div className="mt-4 border-t border-line pt-4">
             <h3 className="font-medium text-ink">Shipping Address</h3>
             <p className="text-sm text-muted mt-1">
-              {order.shippingAddress.street}<br />
-              {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zip}<br />
-              {order.shippingAddress.country}
+              {order.shippingAddress?.street}<br />
+              {order.shippingAddress?.city}, {order.shippingAddress?.state} {order.shippingAddress?.zip}<br />
+              {order.shippingAddress?.country}
             </p>
           </div>
 
           <div className="mt-4 border-t border-line pt-4">
             <h3 className="font-medium text-ink">Payment Method</h3>
-            <p className="text-sm text-muted mt-1 capitalize">{order.paymentMethod.replace('-', ' ')}</p>
+            <p className="text-sm text-muted mt-1 capitalize">
+              {order.paymentMethod?.replace('-', ' ')}
+            </p>
           </div>
 
           <div className="mt-6">
@@ -174,5 +193,13 @@ export default function TrackOrderPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function TrackOrderPage() {
+  return (
+    <Suspense fallback={<div className="mx-auto max-w-2xl px-6 py-16 text-center"><p className="text-muted">Loading...</p></div>}>
+      <TrackOrderContent />
+    </Suspense>
   );
 }
