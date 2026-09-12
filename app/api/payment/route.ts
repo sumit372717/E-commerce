@@ -25,8 +25,8 @@ export async function POST(request: Request) {
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
-      success_url: `https://e-commerce-rjaridkb8-sumit372717s-projects.vercel.app/order-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `https://e-commerce-rjaridkb8-sumit372717s-projects.vercel.app/cart`,
+      success_url: `https://e-commerce-virid-ten-24.vercel.app/order-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `https://e-commerce-virid-ten-24.vercel.app/cart`,
       customer_email: email,
       client_reference_id: userId || null,
       shipping_address_collection: {
