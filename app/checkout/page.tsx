@@ -57,6 +57,7 @@ export default function CheckoutPage() {
           })),
           shippingAddress: address,
           email: user.email,
+          userId: user.id,
         }),
       });
 
