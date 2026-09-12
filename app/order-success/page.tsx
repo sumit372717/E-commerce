@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
@@ -13,8 +13,12 @@ function OrderSuccessContent() {
   const [loading, setLoading] = useState(true);
   const [orderId, setOrderId] = useState("");
   const { clearCart } = useCart();
+  const hasFetched = useRef(false);
 
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     if (!sessionId) {
       router.push("/");
       return;
@@ -28,7 +32,7 @@ function OrderSuccessContent() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [sessionId, router, clearCart]);
+  }, [sessionId]);
 
   if (loading) {
     return (
