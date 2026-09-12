@@ -23,7 +23,6 @@ export default function AccountPage() {
     setUser(storedUser);
     setName(storedUser.name);
 
-    // Fetch user's orders
     fetch(`/api/orders?userId=${storedUser.id}`)
       .then(res => res.json())
       .then(data => {
@@ -40,14 +39,18 @@ export default function AccountPage() {
     try {
       const res = await fetch(`/api/users/${user.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`,
+        },
         body: JSON.stringify({ name }),
       });
 
       if (res.ok) {
         const updatedUser = await res.json();
-        setUser(updatedUser);
-        localStorage.setItem('auth_user', JSON.stringify(updatedUser));
+        const mergedUser = { ...user, name: updatedUser.name };
+        setUser(mergedUser);
+        localStorage.setItem('auth_user', JSON.stringify(mergedUser));
         setEditing(false);
         alert('Profile updated successfully!');
       } else {
@@ -108,6 +111,44 @@ export default function AccountPage() {
                 </li>
               </ul>
             </nav>
+
+            {editing && (
+              <form onSubmit={handleUpdateProfile} className="mt-6 border-t border-line pt-6">
+                <label className="block text-sm font-medium text-ink mb-2">New Name</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full border border-line bg-base px-3 py-2 text-sm text-ink focus:border-trace"
+                  required
+                />
+                <div className="mt-3 flex gap-2">
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className="flex-1 bg-trace px-4 py-2 text-sm font-semibold hover:opacity-80 disabled:opacity-50"
+                  >
+                    {saving ? 'Saving...' : 'Save'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditing(false)}
+                    className="flex-1 border border-line px-4 py-2 text-sm text-ink hover:bg-surface-2"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {!editing && (
+              <button
+                onClick={() => setEditing(true)}
+                className="mt-6 w-full border border-line px-4 py-2 text-sm text-ink hover:bg-surface-2"
+              >
+                Edit Profile
+              </button>
+            )}
           </div>
         </div>
 
@@ -126,7 +167,7 @@ export default function AccountPage() {
                       <div>
                         <p className="font-medium text-ink">Order #{order.id}</p>
                         <p className="text-sm text-muted">
-                          {new Date(order.createdAt).toLocaleDateString()}
+                          {new Date(order.created_at || order.createdAt).toLocaleDateString()}
                         </p>
                         <p className="text-sm text-muted">{order.items.length} items</p>
                       </div>
