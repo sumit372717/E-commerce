@@ -8,10 +8,14 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     const storedUser = getStoredUser();
+    setChecked(true);
+
     if (!storedUser) {
+      setLoading(false);
       return;
     }
     setUser(storedUser);
@@ -25,6 +29,14 @@ export default function OrdersPage() {
       .catch(() => setLoading(false));
   }, []);
 
+  if (!checked || loading) {
+    return (
+      <div className="mx-auto max-w-7xl px-6 py-16 text-center">
+        <p className="text-muted">Loading your orders...</p>
+      </div>
+    );
+  }
+
   if (!user) {
     return (
       <div className="mx-auto max-w-7xl px-6 py-16 text-center">
@@ -36,14 +48,6 @@ export default function OrdersPage() {
         >
           Sign In
         </Link>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="mx-auto max-w-7xl px-6 py-16 text-center">
-        <p className="text-muted">Loading your orders...</p>
       </div>
     );
   }
